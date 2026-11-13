@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Світло Харківщина</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@500;700&display=swap">
+<style>
+:root{--bg:#100F0D;--tx:#F4EFE6;--mu:#A59D8F;--card:#1A1814;--off:#26221B;--ln:#3A352C;--am:#FFB020;--amtx:#FFB020;--onam:#100F0D;--hl:#2A2113;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#FAF6EE;--tx:#1D1A14;--mu:#6B6252;--card:#EFE8DA;--off:#DCD3C0;--ln:#CFC5B0;--am:#F2A000;--amtx:#A35F00;--onam:#1D1A14;--hl:#FBE9C2;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'Manrope',system-ui,sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.app{max-width:460px;margin:0 auto;padding:22px 22px 110px}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+h1{font-family:'Unbounded',sans-serif;font-size:22px;margin:0;letter-spacing:-.5px}
+.sub{font-size:13px;color:var(--mu);margin-top:4px}.sub b{color:var(--amtx)}
+.pill{height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--ln);background:transparent;font-size:14px;font-weight:700}
+.banner{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--hl);border:1px solid var(--am);font-size:14px;font-weight:700;display:none}
+.dial{position:relative;width:min(300px,100%);aspect-ratio:1;margin:18px auto 0}
+.dial svg{width:100%;height:100%}
+.mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mid .a{font-size:13px;color:var(--mu)}
+.mid .t{font-family:'Unbounded',sans-serif;font-weight:700;font-size:42px;line-height:1.15}
+.mid .c{font-size:15px;color:var(--amtx);font-weight:700}
+.hd{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
+.hd h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:15px;margin:0}
+.hd span{font-size:12px;color:var(--mu)}
+.row{display:flex;align-items:center;height:40px;border-radius:12px;background:var(--card);padding:0 14px;font-size:15px;margin-top:8px;border:1px solid transparent}
+.row i{width:6px;height:18px;border-radius:3px;background:var(--ln);margin-right:12px}
+.row .d{margin-left:auto;color:var(--mu)}
+.row.now{background:var(--hl);border-color:var(--am);font-weight:700}.row.now i{background:var(--am)}
+.row.past{opacity:.5}
+.note{font-size:12px;color:var(--mu);margin-top:14px;line-height:1.5}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(416px,calc(100% - 32px));height:60px;border-radius:30px;background:var(--card);border:1px solid var(--ln);display:flex;justify-content:space-around;align-items:center}
+.nav button{width:76px;height:44px;border:0;border-radius:22px;background:none;font-size:13px;font-weight:700;color:var(--mu)}
+.nav button.on{background:var(--am);color:var(--onam)}
+.view{display:none}.view.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.q{height:56px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font-size:17px;font-weight:700}
+.q.on{background:var(--am);color:var(--onam);border-color:var(--am)}
+.chips{display:flex;gap:10px;margin-top:12px}.chips .q{flex:1;height:48px;font-size:15px}
+.lab{font-size:14px;color:var(--mu);margin-top:22px}
+</style>
+</head>
+<body>
+<div class="app">
+ <div class="top"><div><h1>Харківщина</h1><div class="sub">Черга <b id="qn">6.1</b> · <span id="src">дані демо</span></div></div>
+ <button class="pill" id="goq">Черга</button></div>
+
+ <div class="view on" id="v-main">
+  <div class="banner" id="bn" role="status"></div>
+  <div class="dial">
+   <svg viewBox="0 0 300 300" role="img" aria-label="Добовий графік відключень"><g id="arcs" transform="rotate(-90 150 150)" fill="none" stroke-width="24"></g>
+   <circle cx="150" cy="150" r="84" fill="none" stroke="var(--off)" stroke-dasharray="2 5"/>
+   <circle id="dot" r="11" fill="var(--bg)" stroke="var(--tx)" stroke-width="3"/>
+   <g font-size="11" font-weight="700" fill="var(--mu)" text-anchor="middle"><text x="150" y="12">00</text><text x="292" y="154">06</text><text x="150" y="294">12</text><text x="8" y="154">18</text></g></svg>
+   <div class="mid"><div class="a" id="ma"></div><div class="t" id="mt"></div><div class="c" id="mc"></div></div>
+  </div>
+  <div class="hd"><h2>Сьогодні</h2><span id="clk"></span></div>
+  <div id="list"></div>
+  <div class="note">Графік можливих відключень. Фактичні відключення можуть відрізнятися від планових.</div>
+ </div>
+
+ <div class="view" id="v-q">
+  <div class="lab">Оберіть свою чергу</div>
+  <div class="grid" id="grid"></div>
+ </div>
+
+ <div class="view" id="v-s">
+  <div class="lab">Попередити про відключення за</div>
+  <div class="chips" id="warn"></div>
+  <div class="note">Попередження показується на головному екрані, поки застосунок відкритий.</div>
+ </div>
+</div>
+
+<div class="nav"><button class="on" data-v="main">Графік</button><button data-v="q">Черга</button><button data-v="s">Сповіщ.</button></div>
+
+<script>
+var API_URL='/api/schedule';
+var REAL=null,LIVE=false;
+var BASE=[[2,6.5],[9,13],[15,19],[21,24]];
+var QUEUES=['1.1','1.2','2.1','2.2','3.1','3.2','4.1','4.2','5.1','5.2','6.1','6.2'];
+var st={q:'6.1',w:30};
+try{var s=JSON.parse(localStorage.getItem('svitlo')||'null');if(s){st.q=s.q||st.q;st.w=s.w||st.w;}}catch(e){}
+function save(){try{localStorage.setItem('svitlo',JSON.stringify(st));}catch(e){}}
+function sched(q){
+ if(LIVE&&REAL&&REAL.queues&&REAL.queues[q]&&REAL.queues[q].today){return REAL.queues[q].today.slice().sort(function(x,y){return x[0]-y[0]})}
+ return demo(q)}
+function demo(q){var i=QUEUES.indexOf(q),sh=((10-i)%12+12)%12*0.5,out=[];
+ BASE.forEach(function(p){var a=p[0]+sh,b=p[1]+sh;
+  if(a>=24){a-=24;b-=24}
+  if(b>24){out.push([a,24]);out.push([0,b-24])}else out.push([a,b]);});
+ out.sort(function(x,y){return x[0]-y[0]});return out}
+function hm(h){h=Math.round(h*60);var m=h%60,hh=Math.floor(h/60)%24;return(hh<10?'0':'')+hh+':'+(m<10?'0':'')+m}
+function dur(m){m=Math.round(m);var h=Math.floor(m/60),r=m%60;return h?(h+' г '+(r?r+' хв':'')):r+' хв'}
+function $(i){return document.getElementById(i)}
+function render(){
+ var d=new Date(),n=d.getHours()+d.getMinutes()/60,S=sched(st.q);
+ $('qn').textContent=st.q;$('clk').textContent='зараз '+hm(n);
+ $('src').textContent=LIVE?('оновлено '+(REAL.updated||'')):'дані демо';
+ var C=28.8,h='<circle cx="150" cy="150" r="110" stroke="var(--am)"/>';
+ S.forEach(function(p){h+='<circle cx="150" cy="150" r="110" stroke="var(--off)" stroke-dasharray="'+((p[1]-p[0])*C)+' 700" stroke-dashoffset="'+(-p[0]*C)+'"/>'});
+ $('arcs').innerHTML=h;
+ var ang=n/24*2*Math.PI;$('dot').setAttribute('cx',150+110*Math.sin(ang));$('dot').setAttribute('cy',150-110*Math.cos(ang));
+ var cur=null,nxt=null;
+ S.forEach(function(p){if(n>=p[0]&&n<p[1])cur=p;});
+ if(S.length===0){
+  $('ma').textContent='Відключень не заплановано';$('mt').textContent='--:--';$('mc').textContent='';$('bn').style.display='none';
+ }else if(cur){var end=cur[1];
+  if(end===24&&S[0][0]===0)end=24+S[0][1];
+  $('ma').textContent='Світла немає, повернеться о';$('mt').textContent=hm(end);$('mc').textContent='через '+dur((end-n)*60);
+  $('bn').style.display='none';
+ }else{
+  for(var i=0;i<S.length;i++){if(S[i][0]>n){nxt=S[i][0];break}}
+  if(nxt===null){nxt=S[0][0]+24}
+  var wait=(nxt-n)*60;
+  $('ma').textContent='Світло є, вимкнення о';$('mt').textContent=hm(nxt);$('mc').textContent='через '+dur(wait);
+  var b=$('bn');if(wait<=st.w){b.textContent='Через '+dur(wait)+' вимкнення. Зарядіть пристрої.';b.style.display='block'}else b.style.display='none';
+ }
+ var l='';S.forEach(function(p){var c=(cur&&p===cur)?' now':(p[1]<=n?' past':'');l+='<div class="row'+c+'"><i></i><span>'+hm(p[0])+'–'+(p[1]===24?'00:00':hm(p[1]))+'</span><span class="d">'+dur((p[1]-p[0])*60)+'</span></div>'});
+ $('list').innerHTML=l;
+}
+function buildQ(){var g='';QUEUES.forEach(function(q){g+='<button class="q'+(q===st.q?' on':'')+'" data-q="'+q+'">'+q+'</button>'});$('grid').innerHTML=g}
+function buildW(){var g='';[15,30,60].forEach(function(w){g+='<button class="q'+(w===st.w?' on':'')+'" data-w="'+w+'">'+w+' хв</button>'});$('warn').innerHTML=g}
+function show(v){['main','q','s'].forEach(function(x){$('v-'+x).classList.toggle('on',x===v)});
+ document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});window.scrollTo(0,0)}
+document.querySelector('.nav').onclick=function(e){var v=e.target.dataset&&e.target.dataset.v;if(v)show(v)};
+$('goq').onclick=function(){show('q')};
+$('grid').onclick=function(e){var q=e.target.dataset&&e.target.dataset.q;if(q){st.q=q;save();buildQ();render();show('main')}};
+$('warn').onclick=function(e){var w=e.target.dataset&&e.target.dataset.w;if(w){st.w=+w;save();buildW();render()}};
+function load(){fetch(API_URL).then(function(r){return r.json()}).then(function(j){
+ if(j&&j.queues&&j.queues['6.1']&&j.queues['6.1'].today){REAL=j;LIVE=true}else{LIVE=false}render()}).catch(function(){LIVE=false;render()})}
+buildQ();buildW();render();load();setInterval(render,20000);setInterval(load,300000);
+</script>
+</body>
+</html>

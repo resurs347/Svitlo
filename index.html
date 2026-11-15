@@ -6,12 +6,13 @@
 <title>Світло Харківщина</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@500;700&display=swap">
 <style>
-:root{--bg:#100F0D;--tx:#F4EFE6;--mu:#A59D8F;--card:#1A1814;--off:#26221B;--ln:#3A352C;--am:#FFB020;--amtx:#FFB020;--onam:#100F0D;--hl:#2A2113;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#FAF6EE;--tx:#1D1A14;--mu:#6B6252;--card:#EFE8DA;--off:#DCD3C0;--ln:#CFC5B0;--am:#F2A000;--amtx:#A35F00;--onam:#1D1A14;--hl:#FBE9C2;color-scheme:light}}
+:root{--bg:#100F0D;--tx:#F4EFE6;--mu:#A59D8F;--card:#1A1814;--off:#26221B;--ln:#3A352C;--am:#FFB020;--amtx:#FFB020;--onam:#100F0D;--hl:#2A2113;--oa:#5C5444;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#FAF6EE;--tx:#1D1A14;--mu:#6B6252;--card:#EFE8DA;--off:#DCD3C0;--ln:#CFC5B0;--am:#F2A000;--amtx:#A35F00;--onam:#1D1A14;--hl:#FBE9C2;--oa:#B8AC94;color-scheme:light}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:'Manrope',system-ui,sans-serif;min-height:100vh}
 button{font-family:inherit;cursor:pointer;color:inherit}
-.app{max-width:460px;margin:0 auto;padding:22px 22px 110px}
+.app{max-width:460px;margin:0 auto;padding:22px 22px 110px;position:relative}
 .top{display:flex;justify-content:space-between;align-items:flex-start}
 h1{font-family:'Unbounded',sans-serif;font-size:22px;margin:0;letter-spacing:-.5px}
 .sub{font-size:13px;color:var(--mu);margin-top:4px}.sub b{color:var(--amtx)}
@@ -20,9 +21,11 @@ h1{font-family:'Unbounded',sans-serif;font-size:22px;margin:0;letter-spacing:-.5
 .dial{position:relative;width:min(300px,100%);aspect-ratio:1;margin:18px auto 0}
 .dial svg{width:100%;height:100%}
 .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.mid .a{font-size:13px;color:var(--mu)}
-.mid .t{font-family:'Unbounded',sans-serif;font-weight:700;font-size:42px;line-height:1.15}
-.mid .c{font-size:15px;color:var(--amtx);font-weight:700}
+.mid .a{font-size:19px;font-weight:700;color:var(--amtx)}
+.mid .b{font-size:12px;color:var(--mu);margin-top:4px}
+.mid .t{font-family:'Unbounded',sans-serif;font-weight:700;font-size:38px;line-height:1.15}
+.mid .c{font-size:14px;color:var(--amtx);font-weight:700}
+.leg{display:flex;justify-content:center;gap:18px;font-size:12px;color:var(--mu);margin-top:12px}.leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-2px}.leg .on{background:var(--am)}.leg .off{background:var(--oa)}
 .hd{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
 .hd h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:15px;margin:0}
 .hd span{font-size:12px;color:var(--mu)}
@@ -45,21 +48,23 @@ h1{font-family:'Unbounded',sans-serif;font-size:22px;margin:0;letter-spacing:-.5
 </head>
 <body>
 <div class="app">
- <div class="top"><div><h1>Харківщина</h1><div class="sub">Черга <b id="qn">6.1</b> · <span id="src">дані демо</span></div></div>
+ <div class="top"><div><h1>Харківщина</h1><div class="sub">Черга <b id="qn">6.1</b> · <span id="src">завантаження…</span></div></div>
  <button class="pill" id="goq">Черга</button></div>
 
  <div class="view on" id="v-main">
   <div class="banner" id="bn" role="status"></div>
   <div class="dial">
    <svg viewBox="0 0 300 300" role="img" aria-label="Добовий графік відключень"><g id="arcs" transform="rotate(-90 150 150)" fill="none" stroke-width="24"></g>
-   <circle cx="150" cy="150" r="84" fill="none" stroke="var(--off)" stroke-dasharray="2 5"/>
    <circle id="dot" r="11" fill="var(--bg)" stroke="var(--tx)" stroke-width="3"/>
-   <g font-size="11" font-weight="700" fill="var(--mu)" text-anchor="middle"><text x="150" y="12">00</text><text x="292" y="154">06</text><text x="150" y="294">12</text><text x="8" y="154">18</text></g></svg>
-   <div class="mid"><div class="a" id="ma"></div><div class="t" id="mt"></div><div class="c" id="mc"></div></div>
+   <g id="scale"></g></svg>
+   <div class="mid"><div class="a" id="ma"></div><div class="b" id="mb"></div><div class="t" id="mt"></div><div class="c" id="mc"></div></div>
   </div>
+  <div class="leg"><span><i class="on"></i>Світло є</span><span><i class="off"></i>Світла немає</span></div>
   <div class="hd"><h2>Сьогодні</h2><span id="clk"></span></div>
   <div id="list"></div>
-  <div class="note">Графік можливих відключень. Фактичні відключення можуть відрізнятися від планових.</div>
+  <div class="hd"><h2>Завтра</h2></div>
+  <div id="list2"></div>
+  <div class="note" id="nt">Графік можливих відключень. Фактичні відключення можуть відрізнятися від планових.</div>
  </div>
 
  <div class="view" id="v-q">
@@ -77,50 +82,55 @@ h1{font-family:'Unbounded',sans-serif;font-size:22px;margin:0;letter-spacing:-.5
 <div class="nav"><button class="on" data-v="main">Графік</button><button data-v="q">Черга</button><button data-v="s">Сповіщ.</button></div>
 
 <script>
-var API_URL='/api/schedule';
-var REAL=null,LIVE=false;
-var BASE=[[2,6.5],[9,13],[15,19],[21,24]];
+var REAL=null,FAIL=false;
 var QUEUES=['1.1','1.2','2.1','2.2','3.1','3.2','4.1','4.2','5.1','5.2','6.1','6.2'];
-var st={q:'6.1',w:30};
-try{var s=JSON.parse(localStorage.getItem('svitlo')||'null');if(s){st.q=s.q||st.q;st.w=s.w||st.w;}}catch(e){}
+var st={q:'1.1',w:30};
+try{var s=JSON.parse(localStorage.getItem('svitlo')||'null');if(s){if(QUEUES.indexOf(s.q)>=0)st.q=s.q;st.w=s.w||st.w;}}catch(e){}
 function save(){try{localStorage.setItem('svitlo',JSON.stringify(st));}catch(e){}}
-function sched(q){
- if(LIVE&&REAL&&REAL.queues&&REAL.queues[q]&&REAL.queues[q].today){return REAL.queues[q].today.slice().sort(function(x,y){return x[0]-y[0]})}
- return demo(q)}
-function demo(q){var i=QUEUES.indexOf(q),sh=((10-i)%12+12)%12*0.5,out=[];
- BASE.forEach(function(p){var a=p[0]+sh,b=p[1]+sh;
-  if(a>=24){a-=24;b-=24}
-  if(b>24){out.push([a,24]);out.push([0,b-24])}else out.push([a,b]);});
- out.sort(function(x,y){return x[0]-y[0]});return out}
 function hm(h){h=Math.round(h*60);var m=h%60,hh=Math.floor(h/60)%24;return(hh<10?'0':'')+hh+':'+(m<10?'0':'')+m}
-function dur(m){m=Math.round(m);var h=Math.floor(m/60),r=m%60;return h?(h+' г '+(r?r+' хв':'')):r+' хв'}
+function dur(m){m=Math.round(m);var h=Math.floor(m/60),r=m%60;return h?(h+' г'+(r?' '+r+' хв':'')):r+' хв'}
 function $(i){return document.getElementById(i)}
+/* T - відключення сьогодні, TM - завтра (null = ще не опубліковано), n - година зараз */
+function status(T,TM,n){
+ var all=T.map(function(p){return[p[0],p[1]]});
+ if(TM)TM.forEach(function(p){all.push([p[0]+24,p[1]+24])});
+ all.sort(function(a,b){return a[0]-b[0]});
+ var m=[];all.forEach(function(p){if(m.length&&Math.abs(m[m.length-1][1]-p[0])<1e-9)m[m.length-1][1]=p[1];else m.push(p)});
+ for(var i=0;i<m.length;i++){if(n>=m[i][0]&&n<m[i][1])return{on:false,t:m[i][1],wait:(m[i][1]-n)*60,tm:m[i][1]>=24,cur:m[i]}}
+ for(var j=0;j<m.length;j++){if(m[j][0]>n)return{on:true,t:m[j][0],wait:(m[j][0]-n)*60,tm:m[j][0]>=24}}
+ return{on:true,t:null,unknown:TM===null}
+}
+function rows(S,n,mark){var l='';S.forEach(function(p){var c='';if(mark){c=(n>=p[0]&&n<p[1])?' now':(p[1]<=n?' past':'')}
+ l+='<div class="row'+c+'"><i></i><span>'+hm(p[0])+'–'+(p[1]===24?'00:00':hm(p[1]))+'</span><span class="d">'+dur((p[1]-p[0])*60)+'</span></div>'});return l}
 function render(){
- var d=new Date(),n=d.getHours()+d.getMinutes()/60,S=sched(st.q);
+ var d=new Date(),n=d.getHours()+d.getMinutes()/60;
  $('qn').textContent=st.q;$('clk').textContent='зараз '+hm(n);
- $('src').textContent=LIVE?('оновлено '+(REAL.updated||'')):'дані демо';
+ var D=REAL&&REAL.queues&&REAL.queues[st.q];
+ if(!D){
+  $('src').textContent=FAIL?'немає зв’язку із сервером':'завантаження…';
+  $('arcs').innerHTML='<circle cx="150" cy="150" r="110" stroke="var(--oa)"/>';$('dot').setAttribute('cx',-50);
+  $('ma').textContent=FAIL?'Немає даних':'Завантажую…';$('mb').textContent=FAIL?'не вдалося завантажити графік':'';$('mt').textContent='--:--';$('mc').textContent='';
+  $('list').innerHTML='';$('list2').innerHTML='';$('bn').style.display='none';return}
+ $('src').textContent=(REAL.updated?'графік станом на '+REAL.updated:'графік завантажено')+(FAIL?' · немає зв’язку':'');
+ var T=D.today||[],TM=D.tomorrow;
  var C=28.8,h='<circle cx="150" cy="150" r="110" stroke="var(--am)"/>';
- S.forEach(function(p){h+='<circle cx="150" cy="150" r="110" stroke="var(--off)" stroke-dasharray="'+((p[1]-p[0])*C)+' 700" stroke-dashoffset="'+(-p[0]*C)+'"/>'});
+ T.forEach(function(p){h+='<circle cx="150" cy="150" r="110" stroke="var(--oa)" stroke-dasharray="'+((p[1]-p[0])*C)+' 700" stroke-dashoffset="'+(-p[0]*C)+'"/>'});
  $('arcs').innerHTML=h;
  var ang=n/24*2*Math.PI;$('dot').setAttribute('cx',150+110*Math.sin(ang));$('dot').setAttribute('cy',150-110*Math.cos(ang));
- var cur=null,nxt=null;
- S.forEach(function(p){if(n>=p[0]&&n<p[1])cur=p;});
- if(S.length===0){
-  $('ma').textContent='Відключень не заплановано';$('mt').textContent='--:--';$('mc').textContent='';$('bn').style.display='none';
- }else if(cur){var end=cur[1];
-  if(end===24&&S[0][0]===0)end=24+S[0][1];
-  $('ma').textContent='Світла немає, повернеться о';$('mt').textContent=hm(end);$('mc').textContent='через '+dur((end-n)*60);
-  $('bn').style.display='none';
- }else{
-  for(var i=0;i<S.length;i++){if(S[i][0]>n){nxt=S[i][0];break}}
-  if(nxt===null){nxt=S[0][0]+24}
-  var wait=(nxt-n)*60;
-  $('ma').textContent='Світло є, вимкнення о';$('mt').textContent=hm(nxt);$('mc').textContent='через '+dur(wait);
-  var b=$('bn');if(wait<=st.w){b.textContent='Через '+dur(wait)+' вимкнення. Зарядіть пристрої.';b.style.display='block'}else b.style.display='none';
- }
- var l='';S.forEach(function(p){var c=(cur&&p===cur)?' now':(p[1]<=n?' past':'');l+='<div class="row'+c+'"><i></i><span>'+hm(p[0])+'–'+(p[1]===24?'00:00':hm(p[1]))+'</span><span class="d">'+dur((p[1]-p[0])*60)+'</span></div>'});
- $('list').innerHTML=l;
+ var s=status(T,TM,n),b=$('bn');b.style.display='none';
+ if(!s.on){$('ma').textContent='Світла немає';$('ma').style.color='var(--tx)';$('mb').textContent='повернеться '+(s.tm?'завтра о':'о');$('mt').textContent=hm(s.t);$('mc').textContent='через '+dur(s.wait)}
+ else if(s.t===null){$('ma').textContent='Світло є';$('ma').style.color='var(--amtx)';$('mb').textContent='';$('mt').textContent='—';$('mc').textContent=s.unknown?'на завтра графіка ще немає':'відключень не заплановано'}
+ else{$('ma').textContent='Світло є';$('ma').style.color='var(--amtx)';$('mb').textContent='вимкнення '+(s.tm?'завтра о':'о');$('mt').textContent=hm(s.t);$('mc').textContent='через '+dur(s.wait);
+  if(s.wait<=st.w){b.textContent='Через '+dur(s.wait)+' вимкнення. Зарядіть пристрої.';b.style.display='block'}}
+ $('list').innerHTML=T.length?rows(T,n,true):'<div class="note">Сьогодні відключень не заплановано.</div>';
+ $('list2').innerHTML=TM===null||TM===undefined?'<div class="note">Графік на завтра ще не опубліковано.</div>':(TM.length?rows(TM,n,false):'<div class="note">Завтра відключень не заплановано.</div>');
 }
+function buildScale(){var h='',i,a,x,y,r1,r2;
+ for(i=0;i<24;i++){a=i/24*2*Math.PI;r1=96;r2=(i%3===0)?88:92;
+  h+='<line x1="'+(150+r1*Math.sin(a))+'" y1="'+(150-r1*Math.cos(a))+'" x2="'+(150+r2*Math.sin(a))+'" y2="'+(150-r2*Math.cos(a))+'" stroke="var(--mu)" stroke-width="'+(i%3===0?1.6:1)+'" opacity=".7"/>'}
+ for(i=0;i<24;i+=3){a=i/24*2*Math.PI;x=150+137*Math.sin(a);y=150-137*Math.cos(a)+4;
+  h+='<text x="'+x+'" y="'+y+'" font-size="11" font-weight="700" fill="var(--mu)" text-anchor="middle">'+(i<10?'0':'')+i+'</text>'}
+ $('scale').innerHTML=h}
 function buildQ(){var g='';QUEUES.forEach(function(q){g+='<button class="q'+(q===st.q?' on':'')+'" data-q="'+q+'">'+q+'</button>'});$('grid').innerHTML=g}
 function buildW(){var g='';[15,30,60].forEach(function(w){g+='<button class="q'+(w===st.w?' on':'')+'" data-w="'+w+'">'+w+' хв</button>'});$('warn').innerHTML=g}
 function show(v){['main','q','s'].forEach(function(x){$('v-'+x).classList.toggle('on',x===v)});
@@ -129,9 +139,24 @@ document.querySelector('.nav').onclick=function(e){var v=e.target.dataset&&e.tar
 $('goq').onclick=function(){show('q')};
 $('grid').onclick=function(e){var q=e.target.dataset&&e.target.dataset.q;if(q){st.q=q;save();buildQ();render();show('main')}};
 $('warn').onclick=function(e){var w=e.target.dataset&&e.target.dataset.w;if(w){st.w=+w;save();buildW();render()}};
-function load(){fetch(API_URL).then(function(r){return r.json()}).then(function(j){
- if(j&&j.queues&&j.queues['6.1']&&j.queues['6.1'].today){REAL=j;LIVE=true}else{LIVE=false}render()}).catch(function(){LIVE=false;render()})}
-buildQ();buildW();render();load();setInterval(render,20000);setInterval(load,300000);
+var DATA_URL='https://raw.githubusercontent.com/yaroslav2901/OE_OUTAGE_DATA/refs/heads/main/data/Kharkivoblenerho.json';
+function toIntervals(hours){var off=[],k,v,h;
+ for(k in hours){h=parseInt(k,10);if(isNaN(h))continue;v=hours[k];
+  if(v==='no')off.push([h-1,h]);else if(v==='first')off.push([h-1,h-.5]);else if(v==='second')off.push([h-.5,h])}
+ off.sort(function(a,b){return a[0]-b[0]});
+ var m=[];off.forEach(function(p){if(m.length&&Math.abs(m[m.length-1][1]-p[0])<1e-9)m[m.length-1][1]=p[1];else m.push([p[0],p[1]])});return m}
+function convert(raw){
+ var fact=raw.fact,days=fact.data,now=Date.now()/1000,today=null,k;
+ for(k in days){if(+k<=now&&now<+k+86400)today=k}
+ if(!today)today=String(fact.today||Object.keys(days).sort()[0]);
+ var tomorrow=String(+today+86400),out={updated:fact.update||raw.lastUpdated,queues:{}};
+ Object.keys(days[today]||{}).forEach(function(key){if(key.indexOf('GPV')!==0)return;
+  out.queues[key.slice(3)]={today:toIntervals(days[today][key]),
+   tomorrow:(days[tomorrow]&&days[tomorrow][key])?toIntervals(days[tomorrow][key]):null}});
+ return out}
+function load(){fetch(DATA_URL).then(function(r){return r.json()}).then(function(j){
+ var c=convert(j);if(Object.keys(c.queues).length){REAL=c;FAIL=false}else{FAIL=true}render()}).catch(function(){FAIL=true;render()})}
+buildScale();buildQ();buildW();render();load();setInterval(render,20000);setInterval(load,300000);
 </script>
 </body>
 </html>

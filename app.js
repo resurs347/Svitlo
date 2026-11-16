@@ -51,7 +51,7 @@ function render(){
   $('src').textContent='останні дані: '+(REAL.updated||'невідомо');
   $('arcs').innerHTML='<circle cx="150" cy="150" r="110" stroke="var(--oa)"/>';$('dot').setAttribute('cx',-50);
   $('ma').textContent='Немає графіка';$('ma').style.color='var(--tx)';$('mb').textContent='на сьогодні дані відсутні';$('mt').textContent='--:--';$('mc').textContent='';
-  $('list').innerHTML='<div class="note">Для цієї області зараз немає актуального графіка. Можливо, відключень немає або джерело не оновлюється.</div>';$('list2').innerHTML='';$('bn').style.display='none';return}
+  $('list').innerHTML='<div class="note">Для цієї області зараз немає актуального графіка. Можливо, відключень немає або джерело не оновлюється.</div>';$('list2').innerHTML='<div class="note">Немає даних.</div>';$('bn').style.display='none';return}
  $('src').textContent=(REAL.updated?'графік станом на '+REAL.updated:'графік завантажено')+(REAL.stale?' · дані можуть бути застарілими':'')+(FAIL?' · немає зв’язку':'');
  var T=D.today||[],TM=D.tomorrow;
  var C=28.8,h='<circle cx="150" cy="150" r="110" stroke="var(--am)"/>';

@@ -151,4 +151,41 @@ function render(){
 }
 function buildScale(){var h='',i,a,x,y,r1,r2;
  for(i=0;i<24;i++){a=i/24*2*Math.PI;r1=96;r2=(i%3===0)?88:92;
-  h+='<line x1="'+(150+r1*Math.sin(a))+'" y1="'+(150-r1*Math.cos(a))+'" x2="'+(150+r2*Math.sin(a))+'" y2="'+(150-
+  h+='<line x1="'+(150+r1*Math.sin(a))+'" y1="'+(150-r1*Math.cos(a))+'" x2="'+(150+r2*Math.sin(a))+'" y2="'+(150-r2*Math.cos(a))+'" stroke="var(--mu)" stroke-width="'+(i%3===0?1.6:1)+'" opacity=".7"/>'}
+ for(i=0;i<24;i+=3){a=i/24*2*Math.PI;x=150+137*Math.sin(a);y=150-137*Math.cos(a)+4;
+  h+='<text x="'+x+'" y="'+y+'" font-size="11" font-weight="700" fill="var(--mu)" text-anchor="middle">'+(i<10?'0':'')+i+'</text>'}
+ $('scale').innerHTML=h}
+function buildReg(){var g='';REGIONS.forEach(function(r){g+='<option value="'+r.id+'"'+(r.id===st.r?' selected':'')+'>'+r.name+'</option>'});$('reg').innerHTML=g}
+function buildQ(){var g='';var L=queueList();if(!L.length)g='<div class="note">Завантажую список черг…</div>';L.forEach(function(q){g+='<button class="q'+(q===st.q?' on':'')+'" data-q="'+q+'">'+q+'</button>'});$('grid').innerHTML=g}
+function buildW(){var g='';[15,30,60].forEach(function(w){g+='<button class="q'+(w===st.w?' on':'')+'" data-w="'+w+'">'+w+' хв</button>'});$('warn').innerHTML=g}
+function show(v){['main','q','s'].forEach(function(x){$('v-'+x).classList.toggle('on',x===v)});
+ document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});window.scrollTo(0,0)}
+document.querySelector('.nav').onclick=function(e){var v=e.target.dataset&&e.target.dataset.v;if(v)show(v)};
+$('goq').onclick=function(){show('q')};
+$('grid').onclick=function(e){var q=e.target.dataset&&e.target.dataset.q;if(q){st.q=q;save();buildQ();render();show('main')}};
+$('reg').onchange=function(){st.r=this.value;save();REAL=null;FAIL=false;buildQ();render();load()};
+$('warn').onclick=function(e){var w=e.target.dataset&&e.target.dataset.w;if(w){st.w=+w;save();buildW();render()}};
+function toIntervals(hours){var off=[],k,v,h;
+ for(k in hours){h=parseInt(k,10);if(isNaN(h))continue;v=hours[k];
+  if(v==='no')off.push([h-1,h]);else if(v==='first')off.push([h-1,h-.5]);else if(v==='second')off.push([h-.5,h])}
+ off.sort(function(a,b){return a[0]-b[0]});
+ var m=[];off.forEach(function(p){if(m.length&&Math.abs(m[m.length-1][1]-p[0])<1e-9)m[m.length-1][1]=p[1];else m.push([p[0],p[1]])});return m}
+function convert(raw){
+ var fact=raw.fact,days=fact.data,now=Date.now()/1000,today=null,k;
+ for(k in days){if(+k<=now&&now<+k+86400)today=k}
+ if(!today)today=String(fact.today||Object.keys(days).sort()[0]);
+ var tomorrow=String(+today+86400),out={updated:fact.update||raw.lastUpdated,queues:{}};
+ Object.keys(days[today]||{}).forEach(function(key){if(key.indexOf('GPV')!==0)return;
+  out.queues[key.slice(3)]={today:toIntervals(days[today][key]),
+   tomorrow:(days[tomorrow]&&days[tomorrow][key])?toIntervals(days[tomorrow][key]):null}});
+ return out}
+function load(){var id=st.r,my=++REQ;fetch(region(id).url).then(function(r){return r.json()}).then(function(j){
+ if(my!==REQ)return;
+ var c=convert(j);
+ if(Object.keys(c.queues).length){var age=j.lastUpdated?(Date.now()-new Date(j.lastUpdated).getTime())/36e5:0;c.stale=age>36;REAL=c;FAIL=false;
+  if(!c.queues[st.q]){st.q=queueList()[0];save()}buildQ()}else{REAL=null;FAIL=true}
+ render()}).catch(function(){if(my!==REQ)return;FAIL=true;render()})}
+buildScale();buildReg();buildQ();buildW();render();load();setInterval(render,20000);setInterval(load,300000);
+</script>
+</body>
+ </html>
